@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://kit.fontawesome.com/ba9482cfbc.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h2><i class="fa-solid fa-cube"></i>Online Code Editor</h2>
+        <p id="punchline">Compile HTML, CSS and JavaScript on the web</p>
+    </div>
+    <div class="container">
+        <div class="left">
+            <div class="contentbox">
+                <div class="contentheader">
+                    <h4><i class="fa-brands fa-html5"></i>HTML</h4>
+                </div>
+                <div class="contentmain">
+                    <textarea  id="htmlbody" onkeyup="run()"></textarea>
+                </div>
+            </div>
+            <div class="contentbox">
+                <div class="contentheader"><h4><i class="fa-brands fa-html5"></i>CSS</h4></div>
+                <div class="contentmain">
+                    <textarea id="cssbody" onkeyup="run()"></textarea>
+                </div>
+            </div>
+            <div class="contentbox">
+                <div class="contentheader"><h4><i class="fa-brands fa-html5"></i>JavaScript</h4></div>
+                <div class="contentmain">
+                    <textarea id="jsbody" onkeyup="run()"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <h4 id="output"><i class="fa-solid fa-play"></i>Output</h4>
+            <iframe id="o1"></iframe>
+        </div>
+            
+        
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Hybrid Web Dev Project. All Rights Reserved</p>
+    </div>
+</body>
+<script>
+    function run(){
+
+        let htmlcode = document.getElementById("htmlbody").value; 
+        let csscode = document.getElementById("cssbody").value;
+        let jscode = document.getElementById("jsbody").value;
+        let output = document.getElementById("o1");
+
+        output.contentDocument.body.innerHTML = htmlcode+ "<style>"+csscode+"<style>"; 
+
+        output.contentWindow.eval(jscode);
+    }
+    
+</script>
+
+</html>
