@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./styles.css">
+    <title>Online Code Editor</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/ba9482cfbc.js" crossorigin="anonymous"></script>
 </head>
 
@@ -21,46 +21,50 @@
                     <h4><i class="fa-brands fa-html5"></i>HTML</h4>
                 </div>
                 <div class="contentmain">
-                    <textarea  id="htmlbody" onkeyup="run()"></textarea>
+                    <textarea id="htmlbody"></textarea>
                 </div>
             </div>
             <div class="contentbox">
-                <div class="contentheader"><h4><i class="fa-brands fa-html5"></i>CSS</h4></div>
+                <div class="contentheader"><h4><i class="fa-brands fa-css3-alt"></i>CSS</h4></div>
                 <div class="contentmain">
-                    <textarea id="cssbody" onkeyup="run()"></textarea>
+                    <textarea id="cssbody"></textarea>
                 </div>
             </div>
             <div class="contentbox">
-                <div class="contentheader"><h4><i class="fa-brands fa-html5"></i>JavaScript</h4></div>
+                <div class="contentheader"><h4><i class="fa-brands fa-js"></i>JavaScript</h4></div>
                 <div class="contentmain">
-                    <textarea id="jsbody" onkeyup="run()"></textarea>
+                    <textarea id="jsbody"></textarea>
                 </div>
             </div>
         </div>
         <div class="right">
-            <h4 id="output"><i class="fa-solid fa-play"></i>Output</h4>
+            <div class="output-header">
+                <h4 id="output"><i class="fa-solid fa-play"></i>Output</h4>
+                <button id="runButton">Run Code</button>
+            </div>
             <iframe id="o1"></iframe>
         </div>
-            
-        
     </div>
     <div class="footer">
         <p>&copy; 2024 Hybrid Web Dev Project. All Rights Reserved</p>
     </div>
+    <script>
+        function run() {
+            let htmlcode = document.getElementById("htmlbody").value;
+            let csscode = document.getElementById("cssbody").value;
+            let jscode = document.getElementById("jsbody").value;
+            let output = document.getElementById("o1");
+
+            output.contentDocument.body.innerHTML = htmlcode + "<style>" + csscode + "</style>";
+            output.contentWindow.eval(jscode);
+        }
+
+        // Add event listener to button
+        document.getElementById("runButton").addEventListener("click", run);
+
+        // Run once when page loads
+        window.addEventListener("load", run);
+    </script>
 </body>
-<script>
-    function run(){
-
-        let htmlcode = document.getElementById("htmlbody").value; 
-        let csscode = document.getElementById("cssbody").value;
-        let jscode = document.getElementById("jsbody").value;
-        let output = document.getElementById("o1");
-
-        output.contentDocument.body.innerHTML = htmlcode+ "<style>"+csscode+"<style>"; 
-
-        output.contentWindow.eval(jscode);
-    }
-    
-</script>
 
 </html>

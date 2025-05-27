@@ -1,114 +1,140 @@
-*{
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
-body,html{
+
+body, html {
     height: 100%;
     width: 100%;
 }
-body{
-    box-sizing: border-box;
+
+body {
     display: flex;
     flex-direction: column;
-    background-color:rgb(6, 18, 37);
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: rgb(6, 18, 37);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: white;
 }
-.header{
-    padding:5px 3px; 
-    margin: 5px 0px 20px 5px;                                                   
-    text-align: left;                              
-    line-height: 20px;                                         
-    color:rgb(248, 248, 248);                                
-    border-bottom: 2px rgb(250, 250, 250) solid;                                                       
+
+.header {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    text-align: left;
+    color: rgb(248, 248, 248);
+    border-bottom: 2px rgb(250, 250, 250) solid;
 }
-h2{                             
-    font-size: 35px;                     
-    font-weight: 100;                     
-    padding-bottom: 5px;                     
-}                               
-p{                         
-    font-size: 13px;                    
+
+h2 {
+    font-size: 35px;
+    font-weight: 100;
+    padding-bottom: 5px;
 }
-h4{                         
-    color:white;
-    background-color:rgb(33, 36, 58); 
-    height:5%;
-    padding:2px 0px 3px 5px;
+
+p {
+    font-size: 13px;
 }
-.container{
+
+.container {
     display: flex;
-    justify-content:  center; 
     width: 100%;
-    background-color:rgb(6, 18, 37);
-    flex:1;
-    flex-direction: row;  
+    background-color: rgb(6, 18, 37);
+    flex: 1;
+    gap: 20px;
+    padding: 0 20px;
 }
-.footer{
+
+.footer {
     width: 100%;
     text-align: center;
-    background-color: rgb(91, 91, 88);
+    background-color: rgb(33, 36, 58);
+    padding: 10px 0;
     margin-top: auto;
 }
-.contentbox{
-    border: 2px solid black;
-    width: 100%;
-    height: 100%;
-    margin: 10px 0px 10px 10px;
-    
-}
-.contentmain{
-    width: 100%;
-    height: 90%;
+
+.contentbox {
+    border: 1px solid rgb(33, 36, 58);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    overflow: hidden;
 }
 
-textarea{
+.contentheader {
+    background-color: rgb(33, 36, 58);
+    padding: 8px 10px;
+}
+
+.contentmain {
+    height: 300px;
+}
+
+textarea {
     resize: none;
-    background-color:rgb(28, 27, 31);
-    border: rgba(28, 27, 31, 0.627) 1px solid;
-    height:100%;
-    width:100%;
-    box-sizing: border-box; 
-}
-.left{
-    display: flex;
-    flex-direction: column;
+    background-color: rgb(28, 27, 31);
+    color: white;
+    border: none;
+    height: 100%;
     width: 100%;
-    height: 97%;
-    background-color:rgb(6, 18, 37);
-    border-left: 5vw solid rgb(6, 18, 37);
-    border-right: 8vw solid rgb(6, 18, 37);
-    
-}
-.right{
-    display: flex;
-    flex-direction: column;
-    width: 120%;
-    height: 97%;
-    border-right: 7vw solid rgb(6, 18, 37);
-    
-}
-iframe{                    
-    width:100%;
-    height:100%;    
-    background-color: hsl(0, 0%, 100%);
-    border: rgb(33, 36, 58) 1px solid;   
-}
-i{                              
-    padding:3px;
-}
-#output{
-    color:white;
-    background-color:rgb(33, 36, 58); 
-    height:5%;
-    padding:2px 0px 0px 5px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
 }
 
-#htmlbody{                            
-    color:#ff3770;
+.left {
+    width: 50%;
 }
-#cssbody{
-    color:#00a2ff;
+
+.right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-#jsbody{
-    color:#00ff40;
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(33, 36, 58);
+    padding: 8px 10px;
+    border-radius: 5px;
+}
+
+#runButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+#runButton:hover {
+    background-color: #45a049;
+}
+
+iframe {
+    width: 100%;
+    flex: 1;
+    background-color: white;
+    border: 1px solid rgb(33, 36, 58);
+    border-radius: 5px;
+}
+
+i {
+    margin-right: 8px;
+}
+
+#htmlbody {
+    color: #ff3770;
+}
+
+#cssbody {
+    color: #00a2ff;
+}
+
+#jsbody {
+    color: #00ff40;
 }
