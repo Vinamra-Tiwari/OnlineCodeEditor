@@ -40,8 +40,12 @@
         <div class="right">
             <div class="output-header">
                 <h4 id="output"><i class="fa-solid fa-play"></i>Output</h4>
-                <button id="runButton">Run Code</button>
+                <div class="button-group">
+                    <button id="runButton">Run Code</button>
+                    <button id="fullscreenButton">Fullscreen</button>
+                </div>
             </div>
+            
             <iframe id="o1"></iframe>
         </div>
     </div>
@@ -64,6 +68,20 @@
 
         // Run once when page loads
         window.addEventListener("load", run);
+        document.getElementById("fullscreenButton").addEventListener("click", function() {
+        let iframe = document.getElementById("o1");
+
+        if (iframe.requestFullscreen) {
+            iframe.requestFullscreen();
+        } else if (iframe.mozRequestFullScreen) { /* Firefox */
+            iframe.mozRequestFullScreen();
+        } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+            iframe.msRequestFullscreen();
+        }
+});
+
     </script>
 </body>
 
