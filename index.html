@@ -5,7 +5,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Code Editor</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: rgb(6, 18, 37);
+            font-family: 'Trebuchet MS', sans-serif;
+            color: white;
+        }
+
+        .header {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            color: rgb(248, 248, 248);
+            border-bottom: 2px rgb(250, 250, 250) solid;
+        }
+
+        h2 {
+            font-size: 35px;
+            font-weight: 100;
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-size: 13px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            background-color: rgb(6, 18, 37);
+            flex: 1;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .footer {
+            width: 100%;
+            text-align: center;
+            background-color: rgb(33, 36, 58);
+            padding: 10px 0;
+            margin-top: auto;
+        }
+
+        .contentbox {
+            border: 1px solid rgb(33, 36, 58);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .contentheader {
+            background-color: rgb(33, 36, 58);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contentmain {
+            height: 300px;
+        }
+
+        textarea {
+            resize: none;
+            background-color: rgb(28, 27, 31);
+            color: white;
+            border: none;
+            height: 100%;
+            width: 100%;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .left {
+            width: 50%;
+        }
+
+        .right {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgb(33, 36, 58);
+            padding: 8px 10px;
+            border-radius: 5px;
+        }
+
+        #runButton,
+        #fullscreenButton {
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        #runButton {
+            background-color: #4CAF50;
+        }
+
+        #runButton:hover {
+            background-color: #45a049;
+        }
+
+        #fullscreenButton {
+            background-color: #2196F3;
+        }
+
+        #fullscreenButton:hover {
+            background-color: #1976d2;
+        }
+
+        iframe {
+            width: 100%;
+            flex: 1;
+            background-color: white;
+            border: 1px solid rgb(33, 36, 58);
+            border-radius: 5px;
+        }
+
+        select {
+            background-color: #1c1b1f;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+
+        button {
+            margin-left: 5px;
+        }
+    </style>
     <script src="https://kit.fontawesome.com/ba9482cfbc.js" crossorigin="anonymous"></script>
 </head>
 
@@ -19,19 +173,35 @@
             <div class="contentbox">
                 <div class="contentheader">
                     <h4><i class="fa-brands fa-html5"></i>HTML</h4>
+                    <div>
+                        <select id="htmlFileSelector"></select>
+                        <button onclick="createFile('html')">+ New</button>
+                    </div>
                 </div>
                 <div class="contentmain">
                     <textarea id="htmlbody"></textarea>
                 </div>
             </div>
             <div class="contentbox">
-                <div class="contentheader"><h4><i class="fa-brands fa-css3-alt"></i>CSS</h4></div>
+                <div class="contentheader">
+                    <h4><i class="fa-brands fa-css3-alt"></i>CSS</h4>
+                    <div>
+                        <select id="cssFileSelector"></select>
+                        <button onclick="createFile('css')">+ New</button>
+                    </div>
+                </div>
                 <div class="contentmain">
                     <textarea id="cssbody"></textarea>
                 </div>
             </div>
             <div class="contentbox">
-                <div class="contentheader"><h4><i class="fa-brands fa-js"></i>JavaScript</h4></div>
+                <div class="contentheader">
+                    <h4><i class="fa-brands fa-js"></i>JavaScript</h4>
+                    <div>
+                        <select id="jsFileSelector"></select>
+                        <button onclick="createFile('js')">+ New</button>
+                    </div>
+                </div>
                 <div class="contentmain">
                     <textarea id="jsbody"></textarea>
                 </div>
@@ -45,43 +215,103 @@
                     <button id="fullscreenButton">Fullscreen</button>
                 </div>
             </div>
-            
             <iframe id="o1"></iframe>
         </div>
     </div>
     <div class="footer">
         <p>&copy; 2024 Hybrid Web Dev Project. All Rights Reserved</p>
     </div>
+
     <script>
+        const files = {
+            html: { "index.html": "<h1>Hello, World!</h1>" },
+            css: { "style.css": "body { background: #222; color: white; }" },
+            js: { "script.js": "console.log('Hello from JS');" }
+        };
+
+        let currentFiles = {
+            html: "index.html",
+            css: "style.css",
+            js: "script.js"
+        };
+
+        function populateFileSelector(type) {
+            const selector = document.getElementById(type + "FileSelector");
+            selector.innerHTML = "";
+            for (let filename in files[type]) {
+                let option = document.createElement("option");
+                option.value = filename;
+                option.text = filename;
+                selector.appendChild(option);
+            }
+            selector.value = currentFiles[type];
+        }
+
+        function loadEditorContent() {
+            document.getElementById("htmlbody").value = files.html[currentFiles.html];
+            document.getElementById("cssbody").value = files.css[currentFiles.css];
+            document.getElementById("jsbody").value = files.js[currentFiles.js];
+        }
+
+        function saveEditorContent() {
+            files.html[currentFiles.html] = document.getElementById("htmlbody").value;
+            files.css[currentFiles.css] = document.getElementById("cssbody").value;
+            files.js[currentFiles.js] = document.getElementById("jsbody").value;
+        }
+
+        function createFile(type) {
+            let filename = prompt("Enter new " + type.toUpperCase() + " file name (with extension):");
+            if (filename && !files[type][filename]) {
+                files[type][filename] = "";
+                currentFiles[type] = filename;
+                populateFileSelector(type);
+                loadEditorContent();
+            } else {
+                alert("Invalid or duplicate file name.");
+            }
+        }
+
+        function switchFile(type, filename) {
+            saveEditorContent();
+            currentFiles[type] = filename;
+            loadEditorContent();
+        }
+
         function run() {
-            let htmlcode = document.getElementById("htmlbody").value;
-            let csscode = document.getElementById("cssbody").value;
-            let jscode = document.getElementById("jsbody").value;
+            saveEditorContent();
+            let html = files.html[currentFiles.html];
+            let css = files.css[currentFiles.css];
+            let js = files.js[currentFiles.js];
+
             let output = document.getElementById("o1");
-
-            output.contentDocument.body.innerHTML = htmlcode + "<style>" + csscode + "</style>";
-            output.contentWindow.eval(jscode);
+            output.contentDocument.body.innerHTML = html + "<style>" + css + "</style>";
+            output.contentWindow.eval(js);
         }
 
-        // Add event listener to button
         document.getElementById("runButton").addEventListener("click", run);
+        window.addEventListener("load", function () {
+            ["html", "css", "js"].forEach(type => {
+                populateFileSelector(type);
+                document.getElementById(type + "FileSelector").addEventListener("change", function () {
+                    switchFile(type, this.value);
+                });
+            });
+            loadEditorContent();
+            run();
+        });
 
-        // Run once when page loads
-        window.addEventListener("load", run);
-        document.getElementById("fullscreenButton").addEventListener("click", function() {
-        let iframe = document.getElementById("o1");
-
-        if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-        } else if (iframe.mozRequestFullScreen) { /* Firefox */
-            iframe.mozRequestFullScreen();
-        } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) { /* IE/Edge */
-            iframe.msRequestFullscreen();
-        }
-});
-
+        document.getElementById("fullscreenButton").addEventListener("click", function () {
+            let iframe = document.getElementById("o1");
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        });
     </script>
 </body>
 
