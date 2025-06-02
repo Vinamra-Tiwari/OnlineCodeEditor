@@ -112,6 +112,22 @@
             border-radius: 5px;
         }
 
+        #saveButton {
+            background-color: #ff9800;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            color: white;
+            margin-right: 5px;
+        }
+
+        #saveButton:hover {
+            background-color: #e68a00;
+        }
+
         #runButton,
         #fullscreenButton {
             border: none;
@@ -211,6 +227,7 @@
             <div class="output-header">
                 <h4 id="output"><i class="fa-solid fa-play"></i>Output</h4>
                 <div class="button-group">
+                    <button id="saveButton">Save Progress</button>
                     <button id="runButton">Run Code</button>
                     <button id="fullscreenButton">Fullscreen</button>
                 </div>
@@ -288,7 +305,42 @@
             output.contentWindow.eval(js);
         }
 
+        function saveToLocalStorage() {
+            saveEditorContent();
+            const editorState = {
+                files: files,
+                currentFiles: currentFiles
+            };
+            localStorage.setItem('codeEditorState', JSON.stringify(editorState));
+            alert('Progress saved successfully!');
+        }
+
+        function loadFromLocalStorage() {
+            const savedState = localStorage.getItem('codeEditorState');
+            if (savedState) {
+                try {
+                    const parsedState = JSON.parse(savedState);
+                    files.html = parsedState.files.html || files.html;
+                    files.css = parsedState.files.css || files.css;
+                    files.js = parsedState.files.js || files.js;
+                    currentFiles = parsedState.currentFiles || currentFiles;
+                    
+                    // Update UI
+                    ["html", "css", "js"].forEach(type => populateFileSelector(type));
+                    loadEditorContent();
+                    run();
+                    return true;
+                } catch (e) {
+                    console.error("Failed to load saved state:", e);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        document.getElementById("saveButton").addEventListener("click", saveToLocalStorage);
         document.getElementById("runButton").addEventListener("click", run);
+        
         window.addEventListener("load", function () {
             ["html", "css", "js"].forEach(type => {
                 populateFileSelector(type);
@@ -296,8 +348,12 @@
                     switchFile(type, this.value);
                 });
             });
-            loadEditorContent();
-            run();
+            
+            // Try to load saved state, if not use defaults
+            if (!loadFromLocalStorage()) {
+                loadEditorContent();
+                run();
+            }
         });
 
         document.getElementById("fullscreenButton").addEventListener("click", function () {
