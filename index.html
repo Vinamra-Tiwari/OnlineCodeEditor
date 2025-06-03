@@ -63,6 +63,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            height: 100%;
         }
 
         .right {
@@ -74,11 +75,17 @@
         }
 
         .contentbox {
-            flex: 1;
             display: flex;
             flex-direction: column;
             border: 1px solid rgb(33, 36, 58);
             border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .resizable {
+            resize: vertical;
+            overflow: hidden;
+            min-height: 100px;
         }
 
         .contentheader {
@@ -87,6 +94,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .contentmain {
@@ -106,6 +114,24 @@
             font-size: 14px;
         }
 
+        /* HTML Editor - Matrix Green */
+        #htmlbody {
+            color: #00ff41; /* Matrix green */
+            caret-color: white;
+        }
+
+        /* CSS Editor - Violet Pinkish */
+        #cssbody {
+            color: #ff66ff; /* Violet pink */
+            caret-color: white;
+        }
+
+        /* JavaScript Editor - Golden Yellow */
+        #jsbody {
+            color: #ffcc00; /* Golden yellow */
+            caret-color: white;
+        }
+
         .output-header {
             display: flex;
             justify-content: space-between;
@@ -113,6 +139,7 @@
             background-color: rgb(33, 36, 58);
             padding: 8px 10px;
             border-radius: 5px;
+            flex-shrink: 0;
         }
 
         iframe {
@@ -121,6 +148,7 @@
             background-color: white;
             border: 1px solid rgb(33, 36, 58);
             border-radius: 5px;
+            min-height: 0;
         }
 
         #saveButton {
@@ -198,6 +226,19 @@
         button {
             margin-left: 5px;
         }
+
+        /* Resizer handle styling */
+        .resizer {
+            width: 100%;
+            height: 5px;
+            background: rgb(33, 36, 58);
+            cursor: row-resize;
+            flex-shrink: 0;
+        }
+
+        .resizer:hover {
+            background: #4a4e77;
+        }
     </style>
     <script src="https://kit.fontawesome.com/ba9482cfbc.js" crossorigin="anonymous"></script>
 </head>
@@ -209,7 +250,7 @@
     </div>
     <div class="container">
         <div class="left">
-            <div class="contentbox">
+            <div class="contentbox resizable" id="htmlPanel">
                 <div class="contentheader">
                     <h4><i class="fa-brands fa-html5"></i>HTML</h4>
                     <div>
@@ -218,10 +259,11 @@
                     </div>
                 </div>
                 <div class="contentmain">
-                    <textarea id="htmlbody"></textarea>
+                    <textarea id="htmlbody" spellcheck="false"></textarea>
                 </div>
+                <div class="resizer" data-panel="htmlPanel"></div>
             </div>
-            <div class="contentbox">
+            <div class="contentbox resizable" id="cssPanel">
                 <div class="contentheader">
                     <h4><i class="fa-brands fa-css3-alt"></i>CSS</h4>
                     <div>
@@ -230,10 +272,11 @@
                     </div>
                 </div>
                 <div class="contentmain">
-                    <textarea id="cssbody"></textarea>
+                    <textarea id="cssbody" spellcheck="false"></textarea>
                 </div>
+                <div class="resizer" data-panel="cssPanel"></div>
             </div>
-            <div class="contentbox">
+            <div class="contentbox resizable" id="jsPanel">
                 <div class="contentheader">
                     <h4><i class="fa-brands fa-js"></i>JavaScript</h4>
                     <div>
@@ -242,7 +285,7 @@
                     </div>
                 </div>
                 <div class="contentmain">
-                    <textarea id="jsbody"></textarea>
+                    <textarea id="jsbody" spellcheck="false"></textarea>
                 </div>
             </div>
         </div>
@@ -409,6 +452,37 @@
             return false;
         }
 
+        // Resizer functionality
+        function setupResizers() {
+            const resizers = document.querySelectorAll('.resizer');
+            
+            resizers.forEach(resizer => {
+                let startY, startHeight;
+                
+                resizer.addEventListener('mousedown', initResize);
+                
+                function initResize(e) {
+                    e.preventDefault();
+                    startY = e.clientY;
+                    const panel = document.getElementById(resizer.dataset.panel);
+                    startHeight = parseInt(document.defaultView.getComputedStyle(panel).height, 10);
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
+                }
+                
+                function resize(e) {
+                    const panel = document.getElementById(resizer.dataset.panel);
+                    const height = (startHeight + e.clientY - startY) + 'px';
+                    panel.style.height = height;
+                }
+                
+                function stopResize() {
+                    document.removeEventListener('mousemove', resize);
+                    document.removeEventListener('mouseup', stopResize);
+                }
+            });
+        }
+
         document.getElementById("saveButton").addEventListener("click", saveToLocalStorage);
         document.getElementById("runButton").addEventListener("click", run);
         document.getElementById("clearButton").addEventListener("click", clearLocalStorage);
@@ -420,6 +494,8 @@
                     switchFile(type, this.value);
                 });
             });
+
+            setupResizers();
 
             if (!loadFromLocalStorage()) {
                 loadEditorContent();
